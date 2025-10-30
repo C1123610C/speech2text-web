@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>越南语音频转文字</title>
+  <style>
+    body { font-family: Arial; max-width: 700px; margin: 40px auto; text-align: center; }
+    textarea { width: 100%; height: 200px; margin-top: 20px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>🎧 越南语音频转文字</h2>
+  <p>请选择音频文件（支持 .mp3 / .wav）</p>
+  <input type="file" id="audioFile">
+  <br><br>
+  <button onclick="upload()">开始识别</button>
+
+  <h3>识别结果：</h3>
+  <textarea id="result" placeholder="识别结果将显示在这里..."></textarea>
+
+  <script>
+    async function upload() {
+      const file = document.getElementById("audioFile").files[0];
+      if (!file) return alert("请先选择音频文件！");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      document.getElementById("result").value = "正在识别，请稍等...";
+
+      const res = await fetch("/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      document.getElementById("result").value = data.text || data.error || "识别失败，请重试。";
+    }
+  </script>
+</body>
+</html>
